@@ -27,17 +27,6 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
-const port = 3001;
-
-// Close the database connection when the server is closed
-app.on('close', () => {
-    db.close();
-});
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
 
 
 // Helper function to execute SQL queries and return a promise
@@ -53,7 +42,9 @@ const runQuery = (sql, params = []) => {
     });
 };
 
-// Routes
+
+
+// CRUD
 
 // Load all etities
 app.get('/entities', async (req, res) => {
@@ -113,3 +104,14 @@ app.delete('/entities/:id', async (req, res) => {
     }
 });
 
+
+const port = 3001;
+// Close the database connection when the server is closed
+app.on('close', () => {
+    db.close();
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
