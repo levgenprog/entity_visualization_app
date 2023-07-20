@@ -30,15 +30,25 @@ app.use((req, res, next) => {
 
 
 // Helper function to execute SQL queries and return a promise
-const runQuery = (sql, params = []) => {
+const runQuery = (sql, params = [], isSelectQuery = false) => {
     return new Promise((resolve, reject) => {
-        db.run(sql, params, function (err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this);
-            }
-        });
+        if (isSelectQuery) {
+            db.all(sql, params, (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        } else {
+            db.run(sql, params, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this);
+                }
+            });
+        }
     });
 };
 
@@ -49,7 +59,7 @@ const runQuery = (sql, params = []) => {
 // Load all etities
 app.get('/entities', async (req, res) => {
     try {
-        const entities = await runQuery('SELECT * FROM entities');
+        const entities = await runQuery('SELECT * FROM entities', [], true);
         res.json(entities);
     } catch (error) {
         console.error('Error fetching entities:', error);
