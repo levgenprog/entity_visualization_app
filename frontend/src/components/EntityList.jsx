@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { loadEntitiesAction } from '../store/reducers';
+import Button from '../UI/Button/Button';
 
 const EntityList = () => {
     const dispatch = useDispatch();
@@ -13,7 +14,6 @@ const EntityList = () => {
             try {
                 let result = await axios.get('http://localhost:3001/entities');
                 dispatch(loadEntitiesAction(result.data));
-                console.log(entities);
             }
             catch (error) {
                 console.error('Failed to load entities', error);
@@ -25,7 +25,7 @@ const EntityList = () => {
 
     return (
         <div className='enetities'>
-            <table>
+            <table className="entity-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -43,9 +43,12 @@ const EntityList = () => {
                             </td>
                             <td>{entity.labels}</td>
                             <td>
-                                <button>
-                                    Delete
-                                </button>
+                                <div class="verticalLine">
+                                    <Button cls='button edit'>Edit</Button>
+                                </div>
+                                <div class="verticalLine">
+                                    <Button cls='button'>Delete</Button>
+                                </div>
                             </td>
                         </tr>
                     ))}
