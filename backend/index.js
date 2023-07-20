@@ -70,7 +70,9 @@ app.get('/entities', async (req, res) => {
 // Post an entity
 app.post('/entities', async (req, res) => {
     const { name, x, y, labels } = req.body;
-    if (!name || !x || !y) {
+    parseInt(x);
+    parseInt(y);
+    if (!name || x === undefined || y === undefined) {
         return res.status(400).json({ error: 'Name, x or y coordinates are missing' });
     }
 
@@ -88,6 +90,8 @@ app.post('/entities', async (req, res) => {
 app.put('/entities/:id', async (req, res) => {
     const { id } = req.params;
     const { name, x, y, labels } = req.body;
+    parseInt(x);
+    parseInt(y);
     if (!name || !x || !y) {
         return res.status(400).json({ error: 'Name, x or y coordinates are missing' });
     }

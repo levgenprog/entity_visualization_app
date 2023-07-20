@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { loadEntitiesAction, deleteEntityAction, updateEntityAction } from '../store/reducers';
+import { loadEntitiesAction, deleteEntityAction, updateEntityAction, createEntityAction } from '../store/reducers';
 import Button from '../UI/Button/Button';
 import InputTr from './InputTr';
 import InfoTr from './InfoTr';
@@ -12,6 +12,14 @@ const EntityList = () => {
 
     const [editingId, setEditingId] = useState();
     const [editedEntities, setEditedEntities] = useState({});
+
+    const [isAdding, setIsAdding] = useState(false);
+    const [newEntity, setNewEntity] = useState({
+        name: '',
+        x: 0,
+        y: 0,
+        labels: ''
+    });
 
     // Load the entities 
     useEffect(() => {
@@ -47,9 +55,35 @@ const EntityList = () => {
             await axios.put(`http://localhost:3001/entities/${id}`, updatedEntity);
             dispatch(updateEntityAction(updatedEntity));
             setEditingId(null);
+            setEditedEntities({});
         } catch (error) {
             console.error('Error saving changes:', error);
         }
+    };
+
+    const handleNewEntityInputChange = (event) => {
+        const { name, value } = event.target;
+        setNewEntity({ ...newEntity, [name]: value });
+    };
+
+    const addNewEntity = async () => {
+        try {
+            await axios.post('http://localhost:3001/entities', newEntity);
+            dispatch(createEntityAction(newEntity));
+            cancelAddEntity();
+            const updatedEntitiesResult = await axios.get('http://localhost:3001/entities');
+            dispatch(loadEntitiesAction(updatedEntitiesResult.data));
+
+        } catch (error) {
+            console.error('Error adding new entity:', error);
+        }
+    };
+
+    const cancelAddEntity = () => {
+        setIsAdding(false);
+        setNewEntity({ name: '', x: 0, y: 0, labels: '' }); // Reset the newEntity state
+        setEditingId(null);
+        setEditedEntities({});
     };
 
     const deleteEntity = async (id) => {
@@ -87,11 +121,26 @@ const EntityList = () => {
                             <InfoTr editButton={editEntity} deleteButton={deleteEntity} entity={entity} ></InfoTr>
                         )
                     ))}
-                    <tr>
-                        <Button cls={'round-button'}>
-                            <span classNames="plus-sign">+</span>
-                        </Button>
-                    </tr>
+
+                    {!isAdding ? (
+                        <tr>
+                            <td>
+                                <Button cls={'round-button'} change={() => setIsAdding(true)}>
+                                    <span className="plus-sign">+</span>
+                                </Button>
+                            </td>
+
+                        </tr>
+                    ) : (
+                        <InputTr
+                            inputChange={handleNewEntityInputChange}
+                            saveButton={addNewEntity}
+                            cancelButton={cancelAddEntity}
+                            editedEntities={newEntity}
+                            entity={newEntity}>
+                        </InputTr>
+                    )
+                    }
                 </tbody>
             </table>
         </div>
