@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { loadEntitiesAction, deleteEntityAction, updateEntityAction } from '../store/reducers';
 import Button from '../UI/Button/Button';
+import Input from '../UI/Input/Input';
 
 const EntityList = () => {
     const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const EntityList = () => {
         try {
             const updatedEntity = editedEntities[id];
             await axios.put(`http://localhost:3001/entities/${id}`, updatedEntity);
-            dispatch(updateEntityAction(updatedEntity))
+            dispatch(updateEntityAction(updatedEntity));
             setEditingId(null);
         } catch (error) {
             console.error('Error saving changes:', error);
@@ -76,29 +77,37 @@ const EntityList = () => {
                         editingId === entity.id ? (
                             <tr key={entity.id}>
                                 <td>
-                                    <input type="text" name="name"
+                                    <Input type='text' name='name' cls='input'
                                         value={editedEntities[entity.id]?.name || entity.name}
-                                        onChange={(event) => handleInputChange(event, entity.id)} />
+                                        change={handleInputChange} id={entity.id}>
+                                    </Input>
                                 </td>
                                 <td>
-                                    <input type="number" name="x"
+                                    <Input type='number' name='x' cls='input'
                                         value={editedEntities[entity.id]?.x || entity.x}
-                                        onChange={(event) => handleInputChange(event, entity.id)} />
+                                        change={handleInputChange} id={entity.id}>
+                                    </Input>
                                 </td>
                                 <td>
-                                    <input type="number" name="y"
+                                    <input type="number" name="y" className='input'
                                         value={editedEntities[entity.id]?.y || entity.y}
                                         onChange={(event) => handleInputChange(event, entity.id)} />
+
                                 </td>
                                 <td>
-                                    <input type="text" name="labels"
+                                    <Input type='text' name='labels' cls='input'
                                         value={editedEntities[entity.id]?.labels || entity.labels}
-                                        onChange={(event) => handleInputChange(event, entity.id)} />
+                                        change={handleInputChange} id={entity.id}>
+                                    </Input>
                                 </td>
                                 <td>
                                     <div className="verticalLine">
                                         <Button cls='button edit' change={saveChanges} id={entity.id}>Save</Button>
                                     </div>
+                                    <div className="verticalLine">
+                                        <Button cls='button' change={() => setEditingId(null)}>Cancel</Button>
+                                    </div>
+
                                 </td>
                             </tr>
                         ) : (
