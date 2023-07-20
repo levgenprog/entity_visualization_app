@@ -37,3 +37,36 @@
     background: var(--c);
     color: #fff;
 }
+
+
+.round-button {
+    margin: 10px;
+    background-color: #48abe0;
+    color: white;
+    border: none;
+    padding: 5px;
+    font-size: 31px;
+    height: 50px;
+    width: 50px;
+    box-shadow: 0 2px 4px darkslategray;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+}
+
+.round-button:active {
+    background-color: #48abe0;
+    box-shadow: 0 0 2px darkslategray;
+    transform: translateY(2px);
+}
+
+.plus-sign {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.round-button:hover {
+    background-color: transparent;
+    border: 2px solid #48abe0;
+    color: #48abe0;
+}
